@@ -149,10 +149,16 @@
           audioContext.decodeAudioData(request.response, function(buffer) {
             MetronomeSoundObject.sounds[pos] = (buffer);
           }, function() {
-            //error
+            //error decoding
           });
         }
-        request.send();        
+
+        request.onerror = function() {
+            //on localhost (and file://) XMLHttpRequests will be denied.
+            //so for now let's just make an empty buffer.
+            MetronomeSoundObject.sounds[pos] = audioContext.createBuffer(1, AUDIOBUFFERSIZE, 44100);
+        }
+        request.send(); 
     }
 
     MetronomeSoundObject.loadSound("http://robertvinluan.com/interaction-tests/sounds/tick.wav", 0);
