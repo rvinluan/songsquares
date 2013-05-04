@@ -1,0 +1,71 @@
+body {
+	background-color: #333;
+	color: #eee;
+	font-family: 'Source Sans Pro', sans-serif;
+	font-size: 20px;
+	font-weight: 100;
+	letter-spacing: 1.5px;
+	margin: 0; padding: 0;
+}
+
+a {
+	color: #7ba;
+}
+
+.launch {
+	color: #333;
+	padding: 1em 1.5em;
+	background-color: #7ba;
+	font-weight: bold;
+	letter-spacing: 0;
+	text-decoration: none;
+	border-radius: 8px;
+	text-align: center;
+	display: block;
+	margin: 1em;
+}
+
+.summation {
+	margin-bottom: 2em;
+}
+
+.result {
+	font-weight: bold;
+	text-transform: uppercase;
+}
+
+.pass {
+	color: #7CCF44;
+}
+
+.fail {
+	color: #CF4444;
+}
+
+#main {
+	margin: 0 auto;
+	width: 50%;
+	overflow: auto;
+}
+
+	#main h1 {
+		font-size: 3rem;
+		text-align: center;
+		margin: 1em;
+	}
+
+	#main .description {
+		margin-top: 3em;
+	}
+
+@media screen and (max-width: 750px) {
+	#main {
+		width: 80%;
+	}
+}
+
+@media screen and (max-width: 480px) {
+	#main {
+		width: 90%;
+	}
+}
