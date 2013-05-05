@@ -362,6 +362,7 @@ visualizer.handleProcessing = function(p) {
 				below = p.soundObjectAt(so.position.x + 1, so.position.y + 1);
 				if(below) {
 					/* WARNING: Crazy Stacking Logic Ahead */
+					//I should probably move this logic somewhere else.
 					if(!below.stacked) {
 						if(!so.stacked) {
 							//block on block
