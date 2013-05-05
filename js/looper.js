@@ -250,12 +250,6 @@ function gotStream(stream) {
     // Create a Javascript Processor Node to process the audio
     jpnode = audioContext.createScriptProcessor(AUDIOBUFFERSIZE, 1, 1);
     jpnode.onaudioprocess = function(ape) {            
-        // send output to destination.
-        // without headphones this causes feedback.
-        //var data = ape.outputBuffer.getChannelData(0);
-        // for (var i = 0; i < data.length; ++i) {
-        //     //data[i] = ape.inputBuffer.getChannelData(0)[i];
-        // }
         if(recording) {
             if(clip.buffers[clip.buffers.length - 1].getChannelData(0)[AUDIOBUFFERSIZE - 1] == 0) {
                 //new buffers start out with AUDIOBUFFERSIZE samples of silence,
@@ -272,14 +266,6 @@ function gotStream(stream) {
                                         ape.inputBuffer.getChannelData(0) );
             clip.buffers[clip.buffers.length - 1] = AudioBufferFromFloat32(newF32);
         }
-
-        //canvas visualize!
-        //visualizer.drawFrame(ape.inputBuffer.getChannelData(0));
-
-        //visualize with processing!
-        //draw takes care of this.
-        //visualizer.currentWaveform = ape.inputBuffer.getChannelData(0);
-
     } //end onaudioprocess
 
     // Connect it up!
@@ -293,7 +279,7 @@ function stopRecording(){
 }
 
 function startRecording() {	
-    document.getElementById('start-container').style.display = "none";
+    $("#start-container").hide();
 	navigator.webkitGetUserMedia({audio:true}, gotStream);
 }
 
@@ -306,6 +292,7 @@ function playDelayedSoundClosure(whichSO) {
     soundObjects[whichSO].startedPlaying = new Date().getTime();
 }
 
+//checks if it's at the beginning of the loop again.
 function check() {
     if(!jpnode) {
         return;
@@ -328,8 +315,8 @@ function check() {
     }
 }
 
-//loop this check to see when it's necessary to loop the clip
-window.setInterval(check, 1);
+//loop this check 60 times a second
+window.setInterval(check, 1000/60);
 
 function createNewSoundObjectFromClip(clip, td) {
     var so = new SoundObject();
@@ -356,7 +343,6 @@ function createNewSoundObjectFromClip(clip, td) {
         x: 0,
         y: 0
     }
-    //so.sound.loop();
     soundObjects.push(so);
 }
 
@@ -432,8 +418,7 @@ window.onload = function() {
         left: (cv.width()/2) - (sb.width()/2)
     });
 
-    /* Canvas Tests */
+    //start the visualization
     visualizer.init(soundObjects);
-    //visualizer.draw();
 }
 
