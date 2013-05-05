@@ -44,41 +44,30 @@ var SoundObjectStack = function() {
 var SoundObject = function() {
     this.gain = audioContext.createGainNode();
     this.gain.connect(audioContext.destination);
+    this.sound = null;
+    this.beingDragged = false;
+    this.startedPlaying = 0;
+    this.stacked =  false;
+    this.stack = false;
+    this.position = { x: 0, y: 0 };
+    this.offset = { x: 0, y: 0};
+    this.size = 30;
+    this.color = { h: 0, s: 0, b: 0};
 }
 
-SoundObject.prototype = {
-    sound: null,
-    beingDragged: false,
-    startedPlaying: 0,
-    stacked: false,
-    stack: null,
-    position: {
-        x: 0,
-        y: 0
-    },
-    offset: {
-        x: 0,
-        y: 0
-    },
-    size: 30,
-    color: {
-        h: 0,
-        s: 0,
-        b: 0
-    },
-    isInRegion: function(region) {
-        return this.position.x === region.x &&
-            this.position.y === region.y;
-    },
-    isInAnyRegion: function() {
-        for(var r in visualizer.regions) {
-            if(this.isInRegion(visualizer.regions[r]) &&
-                visualizer.activeRegion.indexOf(r) !== -1) {
-                return true;
-            }
+SoundObject.prototype.isInRegion = function(region) {
+    return this.position.x === region.x &&
+        this.position.y === region.y;
+}
+
+SoundObject.prototype.isInAnyRegion = function() {
+    for(var r in visualizer.regions) {
+        if(this.isInRegion(visualizer.regions[r]) &&
+            visualizer.activeRegion.indexOf(r) !== -1) {
+            return true;
         }
-        return false;
     }
+    return false;
 }
 
 /* Metronome Sound Object
@@ -114,7 +103,6 @@ MetronomeSoundObject.loadSound = function(url, pos) {
     request.open('GET', url, true);
     request.responseType = 'arraybuffer';
 
-    // Decode asynchronously
     request.onload = function() {
       audioContext.decodeAudioData(request.response, function(buffer) {
         MetronomeSoundObject.sounds[pos] = (buffer);
@@ -125,7 +113,7 @@ MetronomeSoundObject.loadSound = function(url, pos) {
 
     request.onerror = function() {
         //on localhost (and file://) XMLHttpRequests will be denied.
-        //so for now let's just make an empty buffer.
+        //let's just make an empty buffer.
         MetronomeSoundObject.sounds[pos] = audioContext.createBuffer(1, AUDIOBUFFERSIZE, 44100);
     }
     request.send(); 
@@ -171,17 +159,14 @@ var LongAudioSource = function(initialBuffer) {
     this.buffers[0] = initialBuffer;
     this.looped = false;
     this.delay = 0;
+    this.endSource = null;
 }
 
-LongAudioSource.prototype = {
-    buffers: [],
-    looped: false, 
-    endSource: null,
-    addToBuffers: function(buffer) {
+LongAudioSource.prototype.addToBuffers = function(buffer) {
         this.buffers.push(buffer);
-    },
-    delay: 0,
-    play: function(node) {
+}
+
+LongAudioSource.prototype.play = function(node) {
         var totalTime = 0;
         for(var i = 0; i < this.buffers.length; i++) {
             var source = audioContext.createBufferSource();
@@ -197,31 +182,34 @@ LongAudioSource.prototype = {
                 this.endSource = source;
             }
         }
-    },
-    loop: function(node) {
+}
+
+LongAudioSource.prototype.loop = function(node) {
         this.looped = true;
         this.play(node);
-    },
-    stop: function() {
+}
+
+LongAudioSource.prototype.stop = function() {
         for(var i = 0; i < this.buffers.length; i++) {
             this.buffers[i].stop(0);
         }
-    },
-    clone: function() {
+}
+
+LongAudioSource.prototype.clone = function() {
         var clone = new LongAudioSource();
         for(var i = 0; i < this.buffers.length; i++) {
             clone.buffers[i] = AudioBufferFromFloat32(this.buffers[i].getChannelData(0));
         }
         clone.looped = this.looped;
         return clone;
-    },
-    getDuration: function() {
+}
+
+LongAudioSource.prototype.getDuration = function() {
         var d = 0;
         for(var i = 0; i < this.buffers.length; i++) {
             d += this.buffers[i].duration;
         }
         return d;
-    }
 }
 
 var clip = new LongAudioSource(audioContext.createBuffer(1, AUDIOBUFFERSIZE, 44100));
