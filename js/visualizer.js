@@ -2,10 +2,8 @@ var visualizer = {};
 
 visualizer.init = function(soundObjects) {	
 	visualizer.canvas = document.getElementById('canvas');
-	visualizer.ctx  = visualizer.canvas.getContext('2d');
 	visualizer.processingInstance = new Processing(visualizer.canvas, visualizer.handleProcessing);
 	visualizer.soundObjects = soundObjects;
-	visualizer.currentWaveform = null;
 	visualizer.gridSize = 40;
 	visualizer.gridNumber = 25;
 	visualizer.gridStart = {
@@ -60,6 +58,9 @@ visualizer.handleProcessing = function(p) {
 		p.colorMode(p.HSB);
 	}
 
+	//this function exists because I found a bug in Processing.js's use of
+	//shearX and screenX. This function generates tests to clearly show the error.
+	//it's never used in the program, but I thought keeping it around might be useful.
 	p.testShearScreenX = function() {
 		p.pushMatrix();
 		p.fill(255);//white
@@ -119,10 +120,6 @@ visualizer.handleProcessing = function(p) {
 				}
 			}
 		});
-
-		if(visualizer.currentWaveform != null) {
-			p.visualizeWaveform(visualizer.currentWaveform);
-		}
 		if(soundObjects) {
 			//p.renderSoundObject(MetronomeSoundObject);
 			for(var i = 0; i < soundObjects.length; i++) {
@@ -193,17 +190,6 @@ visualizer.handleProcessing = function(p) {
 		}
 	}
 
-	p.visualizeWaveform = function(PCMData) {
-		p.background(255,255,255);
-		p.stroke(100,100,100);
-		p.noFill();
-		for(var i = 0; i < PCMData.length; i++) {
-			if(1) {
-				p.line(i/2, 250 + (PCMData[i] * 50), (i+1)/2, 250 + (PCMData[i+1]*50));
-			}
-		}
-	}
-
 	//draw a hexagon
 	p.hex = function(x, y, r) {
 		var k = Math.sqrt((3/4)*r*r);
@@ -247,15 +233,6 @@ visualizer.handleProcessing = function(p) {
 		p.vertex(-k, -r/2);
 		p.endShape(p.CLOSE);
 		p.popMatrix();
-	}
-
-	p.softRectangle = function(x, y, r, color) {
-		for(var i = r + 40; i > r; i--) {
-			p.fill(color.r, color.g, color.b, 255/40);
-			p.rectMode(p.CENTER);
-			p.rect(x + r/2, y + r/2, i, i);
-			p.rectMode(p.CORNER);
-		}
 	}
 
 	p.renderSoundObject = function(soundobject) {
@@ -328,6 +305,7 @@ visualizer.handleProcessing = function(p) {
 		return Math.sqrt(xs + ys) <= (so.size);		
 	}
 
+	/* given grid coordinates, determines if there is a soundObject there. */
 	p.soundObjectAt = function(px, py) {
 		for (var i = 0; i < soundObjects.length; i++) {
 			if(soundObjects[i].position.x === px &&
@@ -383,7 +361,7 @@ visualizer.handleProcessing = function(p) {
 				}
 				below = p.soundObjectAt(so.position.x + 1, so.position.y + 1);
 				if(below) {
-					//stackzzzz
+					/* WARNING: Crazy Stacking Logic Ahead */
 					if(!below.stacked) {
 						if(!so.stacked) {
 							//block on block
@@ -469,32 +447,4 @@ visualizer.handleProcessing = function(p) {
 			}
 		}
 	}
-}
-
-visualizer.draw = function() {
-	var ctx = visualizer.ctx;
-
-	ctx.fillStyle = "rgb(200,0,0)";
-	ctx.fillRect (10, 10, 55, 50);
- 
-	ctx.fillStyle = "rgba(0, 0, 200, 0.5)";
-	ctx.fillRect (30, 30, 55, 50);
-}
-
-visualizer.drawFrame = function(PCMData) {
-	//PCMData is a Float32Array.
-	var ctx = visualizer.ctx;
-
-	//clear the background.
-	ctx.clearRect(0,0,500,500);
-	ctx.strokeStyle = "#888888";
-
-	ctx.beginPath();
-	ctx.moveTo(0,250);
-	for(var i = 0; i < PCMData.length; i++) {
-		if(i%12 == 0) {
-			ctx.lineTo( i / 2, 250 + (PCMData[i] * 50) );
-		}
-	}
-	ctx.stroke();
 }
