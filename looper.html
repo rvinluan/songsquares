@@ -30,23 +30,21 @@
     <script type="text/javascript" src="js/looper.js"></script>
 </head>
 <body>
-    <div id="volume-container">
-        <div id="volume-label">Metronome Volume:
-        </div>
-        <div id="slider-volume"></div>
+    <div id="toolbar" class="clearfix">
+         <div id="show-settings">Show Metronome Options</div>
+         <div id="save">Save Song</div>
+    </div>
+    <div id="settings">
     </div>
     <div id="canvas-container">
         <div id="start-container">
             <h1>Welcome!</h1>
-            <p>This tool is experimental and still considered to be in alpha.
-                To get started, select a Tempo and click the start button.</p>
-                <div id="tempo-value">120</div>
-                <div id="slider-tempo"></div>
-            <div id="start-button" onclick="javascript:startRecording();">START</div>
+            <p>This tool is experimental and still very much in-progress.
+                To get started, pick a mode:</p>
+            <div class="start-button" onclick="javascript:startRecording('metronome')" data-mode="metronome">Loop is based on metronome</div>
+            <div class="start-button" onclick="javascript:startRecording('free')" data-mode="free">Loop is based on length of first recording</div>
         </div>
         <canvas id="canvas" width="960" height="600"></canvas>
-        <div class="tooltip special-region">This is a special region. Any block placed here will loop,
-        regardless of whether or not it's stacked.</div>
 	</div>
     <script src="js/controls-setup.js" type="text/javascript"></script>
 </body>

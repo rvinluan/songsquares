@@ -19,6 +19,11 @@ var tempo = 120;
 var soundObjects = [];
 var stacks = [];
 
+//mode is either:
+//'Metronome' -- the length of a loop is based on 4 beats of a metronome.
+//'Free' -- the length of a loop is the same length as the first recording.
+var mode;
+
 /* Sound Object Stack
 *
 * A stack of Sound Objects that moves together, and loops.
@@ -278,7 +283,8 @@ function stopRecording(){
     jpnode.disconnect();
 }
 
-function startRecording() {	
+function startRecording(m) {
+    mode = m;
     $("#start-container").hide();
 	navigator.webkitGetUserMedia({audio:true}, gotStream);
 }

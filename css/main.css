@@ -1,3 +1,13 @@
+.clearfix:before,
+.clearfix:after {
+    content: " "; /* 1 */
+    display: table; /* 2 */
+}
+
+.clearfix:after {
+    clear: both;
+}
+
 * {
 	margin: 0; padding: 0;
 	box-sizing: border-box;
@@ -6,40 +16,32 @@
 body {
 	background-color: #333;
 	font-family: Source Sans Pro, sans-serif;
-}
-
-#volume-container {
 	color: white;
-	height: 50px;
-	padding: 1em 3em;
-	background-color: #333;
-	width: 960px;
-	margin: 0 auto;
-
 }
 
-#volume-label {
-	float: left;
-}
-
-#slider-volume {
-	float: right;
-	width: 80%;
-}
-
-#slider-tempo {
-	margin: 1em;
-}
-
-#tempo-value {
-	font-weight: bold;
-	margin: 1em;
-}
-
-#canvas-container {
+#canvas-container, #toolbar, #settings {
 	width: 960px;
 	margin: 0 auto;
 	position: relative;
+}
+
+#toolbar {
+	padding: 1em;
+}
+
+#show-settings {
+	float: left;
+	vertical-align: center;
+	padding: .5em 1em;
+	cursor: pointer;
+}
+
+#save {
+	padding: .5em 1em;
+	float: right;
+	background-color: #7ba;
+	border-radius: 3px;
+	cursor: pointer;
 }
 
 #start-container {
@@ -52,7 +54,13 @@ body {
 	width: 300px;
 }
 
-#start-button {
+#tempo-value {
+	font-size: 1.3em;
+	font-weight: bold;
+	margin: 1em 0;
+}
+
+.start-button {
 	background-color: #EEE;
 	padding: 1.5em;
 	margin: 1em;
