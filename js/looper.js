@@ -96,7 +96,7 @@ SoundObject.prototype.exportAsJSON = function() {
 function decircularizeAll() {
     var a = [];
     for(i in soundObjects) {
-        soundobjects.push( soundObjects[i].exportAsJSON );
+        a.push( soundObjects[i].exportAsJSON() );
     }
     return {
         "soundobjects": a
