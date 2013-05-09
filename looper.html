@@ -60,7 +60,7 @@
                 url: "http://do.robertvinluan.com:1337/datadump",
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
-                data: JSON.stringify({"soundobjects": soundObjects}),
+                data: JSON.stringify(decircularizeAll()),
                 success: function() {
                     console.log("success!");
                 },

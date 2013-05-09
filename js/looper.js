@@ -46,7 +46,10 @@ var SoundObjectStack = function() {
 *
 */
 
+var currentID = 0;
+
 var SoundObject = function() {
+    this.id = ++currentID;
     this.gain = audioContext.createGainNode();
     this.gain.connect(audioContext.destination);
     this.sound = null;
@@ -73,6 +76,31 @@ SoundObject.prototype.isInAnyRegion = function() {
         }
     }
     return false;
+}
+
+//use this to write to the server.
+//takes out unnecessary and circular references.
+SoundObject.prototype.exportAsJSON = function() {
+    var jso = {};
+    jso.sound = this.sound;
+    jso.startedPlaying = this.startedPlaying;
+    jso.stacked = this.stacked;
+    //jso.stack = this.stack;
+    jso.position = this.position;
+    jso.offset = this.offset;
+    jso.color = this.color;
+    jso.size = this.size;
+    return jso;
+}
+
+function decircularizeAll() {
+    var a = [];
+    for(i in soundObjects) {
+        soundobjects.push( soundObjects[i].exportAsJSON );
+    }
+    return {
+        "soundobjects": a
+    }
 }
 
 /* Metronome Sound Object
