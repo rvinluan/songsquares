@@ -82,7 +82,10 @@ SoundObject.prototype.isInAnyRegion = function() {
 //takes out unnecessary and circular references.
 SoundObject.prototype.exportAsJSON = function() {
     var jso = {};
+    //base64encode the sound;
+    this.encodeSound();
     jso.sound = this.sound;
+    jso.sound.endSource = null; //circular reference
     jso.startedPlaying = this.startedPlaying;
     jso.stacked = this.stacked;
     //jso.stack = this.stack;
@@ -91,6 +94,16 @@ SoundObject.prototype.exportAsJSON = function() {
     jso.color = this.color;
     jso.size = this.size;
     return jso;
+}
+
+SoundObject.prototype.encodeSound = function() {
+    for(b in this.sound.buffers) {
+        var buffer = this.sound.buffers[b];
+        this.sound.buffers[b].encodedAudio = base64ArrayBuffer(buffer.getChannelData(0).buffer);
+        console.log(this.sound.buffers[b].encodedAudio);
+    }
+    // var buffer = this.sound.buffers[0];
+    // return base64ArrayBuffer(buffer.getChannelData(0).buffer);
 }
 
 function decircularizeAll() {

@@ -48,13 +48,13 @@
         <canvas id="canvas" width="960" height="600"></canvas>
 	</div>
     <script src="js/controls-setup.js" type="text/javascript"></script>
+    <script src="js/base64.js" type="text/javascript"></script>
     <script>
         var testdata = {
             "this is": "a test"
         }
         //use the button to test shit
         $('#save').click(function(){
-            console.log("clicked save");
             $.ajax({
                 type: "POST",
                 url: "http://do.robertvinluan.com:1337/datadump",
