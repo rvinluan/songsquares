@@ -56,7 +56,7 @@ var SoundObject = function() {
     this.beingDragged = false;
     this.startedPlaying = 0;
     this.stacked =  false;
-    this.stack = false;
+    this.stack = null;
     this.position = { x: 0, y: 0 };
     this.offset = { x: 0, y: 0};
     this.size = 30;
@@ -78,6 +78,21 @@ SoundObject.prototype.isInAnyRegion = function() {
     return false;
 }
 
+SoundObject.prototype.addToStack = function(stack, pos) {
+    if(pos !== undefined) {
+        //splice can be used to insert elements by making the second parameter 0
+        stack.sos.splice(pos,0,this.id);
+    } else {
+        stack.sos.push(this.id);
+    }
+    this.stacked = true;
+    this.stack = stack;
+}
+
+SoundObject.prototype.removeFromStack = function(stack) {
+
+}
+
 //use this to write to the server.
 //takes out unnecessary and circular references.
 SoundObject.prototype.exportAsJSON = function() {
@@ -88,7 +103,7 @@ SoundObject.prototype.exportAsJSON = function() {
     jso.sound.endSource = null; //circular reference
     jso.startedPlaying = this.startedPlaying;
     jso.stacked = this.stacked;
-    //jso.stack = this.stack;
+    jso.stack = this.stack;
     jso.position = this.position;
     jso.offset = this.offset;
     jso.color = this.color;
@@ -96,14 +111,45 @@ SoundObject.prototype.exportAsJSON = function() {
     return jso;
 }
 
+//essentially 
+SoundObject.prototype.importFromJSON = function(jso) {
+    this.sound = jso.sound;
+    this.decodeSound();
+    this.startedPlaying = jso.startedPlaying;
+    this.stacked = jso.stacked;
+    this.stack = jso.stack;
+    this.position = jso.position;
+    this.offset = jso.offset;
+    this.color = jso.color;
+    this.size = jso.size;
+}
+
 SoundObject.prototype.encodeSound = function() {
     for(b in this.sound.buffers) {
         var buffer = this.sound.buffers[b];
-        this.sound.buffers[b].encodedAudio = base64ArrayBuffer(buffer.getChannelData(0).buffer);
-        console.log(this.sound.buffers[b].encodedAudio);
+        this.sound.buffers[b].encodedAudio = _arrayBufferToBase64(buffer.getChannelData(0).buffer);
+        console.log(this.sound.buffers[b].encodedAudio.substr(0, 20));
+        console.log(buffer.getChannelData(0).buffer);
+        console.log(new Float32Array(buffer.getChannelData(0).buffer));
     }
     // var buffer = this.sound.buffers[0];
     // return base64ArrayBuffer(buffer.getChannelData(0).buffer);
+}
+
+SoundObject.prototype.decodeSound = function() {
+    var buffersArray = this.sound.buffers;
+    var newLongAudio = new LongAudioSource();
+    for(b in buffersArray) {
+        var buffer = buffersArray[b];
+        console.log(buffer.encodedAudio.substr(0,20));
+        var ab = decode(buffer.encodedAudio);
+        console.log(ab);
+        var f32 = new Float32Array(ab);
+        console.log(f32);
+        buffersArray[b] = AudioBufferFromFloat32(f32);
+        newLongAudio.addToBuffers(buffersArray[b]);
+    }
+    this.sound = newLongAudio;
 }
 
 function decircularizeAll() {
@@ -114,6 +160,15 @@ function decircularizeAll() {
     return {
         "soundobjects": a
     }
+}
+
+function soundObjectByID(id) {
+    for( i in soundObjects ) {
+        if(soundObjects[i].id == id) {
+            return soundObjects[i];
+        }
+    }
+    return null; 
 }
 
 /* Metronome Sound Object
@@ -201,8 +256,9 @@ MetronomeSoundObject.play = function() {
 *
 */
 var LongAudioSource = function(initialBuffer) {
-    this.buffers = [1];
-    this.buffers[0] = initialBuffer;
+    this.buffers = [];
+    if(initialBuffer !== undefined)
+        this.buffers.push(initialBuffer);
     this.looped = false;
     this.delay = 0;
     this.endSource = null;
@@ -346,7 +402,7 @@ function check() {
     }
     for (var i = 0; i < soundObjects.length; i++) {
         if(soundObjects[i].isInAnyRegion() ||
-            (soundObjects[i].stacked && soundObjects[i].stack.sos[0].isInAnyRegion())) {
+            (soundObjects[i].stacked && soundObjectByID(soundObjects[i].stack.sos[0]).isInAnyRegion())) {
             soundObjects[i].gain.gain.value = 1;
         } else {
             soundObjects[i].gain.gain.value = 0;

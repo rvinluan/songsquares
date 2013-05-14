@@ -1,3 +1,5 @@
+var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+
 //simple, slow version from Stack Overflow
 //http://stackoverflow.com/questions/9267899/arraybuffer-to-base64-encoded-string
 function _arrayBufferToBase64( buffer ) {
@@ -8,6 +10,55 @@ function _arrayBufferToBase64( buffer ) {
         binary += String.fromCharCode( bytes[ i ] )
     }
     return window.btoa( binary );
+}
+
+function encode(arraybuffer) {
+  var bytes = new Uint8Array(arraybuffer),
+  i, len = bytes.buffer.byteLength, base64 = "";
+
+  for (i = 0; i < len; i+=3) {
+    base64 += chars[bytes.buffer[i] >> 2];
+    base64 += chars[((bytes.buffer[i] & 3) << 4) | (bytes.buffer[i + 1] >> 4)];
+    base64 += chars[((bytes.buffer[i + 1] & 15) << 2) | (bytes.buffer[i + 2] >> 6)];
+    base64 += chars[bytes.buffer[i + 2] & 63];
+  }
+
+  if ((len % 3) === 2) {
+    base64 = base64.substring(0, base64.length - 1) + "=";
+  } else if (len % 3 === 1) {
+    base64 = base64.substring(0, base64.length - 2) + "==";
+  }
+
+  return base64;
+}
+
+function decode(base64){
+  var bufferLength = base64.length * 0.75,
+  len = base64.length, i, p = 0,
+  encoded1, encoded2, encoded3, encoded4;
+
+  if (base64[base64.length - 1] === "=") {
+    bufferLength--;
+    if (base64[base64.length - 2] === "=") {
+      bufferLength--;
+    }
+  }
+
+  var arraybuffer = new ArrayBuffer(bufferLength),
+  bytes = new Uint8Array(arraybuffer);
+
+  for (i = 0; i < len; i+=4) {
+    encoded1 = chars.indexOf(base64[i]);
+    encoded2 = chars.indexOf(base64[i+1]);
+    encoded3 = chars.indexOf(base64[i+2]);
+    encoded4 = chars.indexOf(base64[i+3]);
+
+    bytes[p++] = (encoded1 << 2) | (encoded2 >> 4);
+    bytes[p++] = ((encoded2 & 15) << 4) | (encoded3 >> 2);
+    bytes[p++] = ((encoded3 & 3) << 6) | (encoded4 & 63);
+  }
+
+  return arraybuffer;
 }
 
 // Converts an ArrayBuffer directly to base64, without any intermediate 'convert to string then
@@ -160,5 +211,8 @@ var Base64Binary = {
 
 //my export
 function ArrayBufferBase64(str) {
-  return Base64Binary.decode(str);
+  var uint =  Base64Binary.decodeArrayBuffer(str);
+  var f32 = new Float32Array(uint);
+  console.log(f32);
+  return f32;
 }

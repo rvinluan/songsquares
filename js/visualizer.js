@@ -250,11 +250,11 @@ visualizer.handleProcessing = function(p) {
 			soundobject.position.x = isoCoords.x;
 			soundobject.position.y = isoCoords.y;
 			if(soundobject.stacked) {
-				var stkpos = soundobject.stack.sos.indexOf(soundobject);
+				var stkpos = soundobject.stack.sos.indexOf(soundobject.id);
 				for (var i = stkpos; i < soundobject.stack.sos.length; i++) {
 					var stkdist = i - stkpos;
-					soundobject.stack.sos[i].position.x = soundobject.position.x - stkdist;
-					soundobject.stack.sos[i].position.y = soundobject.position.y - stkdist;
+					soundObjectByID(soundobject.stack.sos[i]).position.x = soundobject.position.x - stkdist;
+					soundObjectByID(soundobject.stack.sos[i]).position.y = soundobject.position.y - stkdist;
 				}
 			}
 		}
@@ -316,6 +316,9 @@ visualizer.handleProcessing = function(p) {
 		return null;
 	}
 
+	/* given an id, finds the corresponding sound object. */
+	//p.soundObjectByID = function(id) {}
+
 	/* this function takes an array index, not a soundObject */
 	p.bringToFront = function(whichSO) {
 		var so = soundObjects.splice(whichSO, 1);
@@ -365,83 +368,91 @@ visualizer.handleProcessing = function(p) {
 					//I should probably move this logic somewhere else.
 					if(!below.stacked) {
 						if(!so.stacked) {
-							//block on block
+							//block on block:
+							//make a new stack, add both blocks.
 							stk = new SoundObjectStack();
-							stk.sos.push(below);
-							stk.sos.push(so);
-							below.stack = stk;
-							below.stacked = true;
-							so.stack = stk;
-							so.stacked = true;
+							below.addToStack(stk);
+							so.addToStack(stk);
 							stacks.push(stk);
 						} else {
-							//stack on block
-							var oldstk = so.stack;
-							var index = oldstk.sos.indexOf(so);
-							var newsos = oldstk.sos.splice(index);
-							newsos.splice(0,0,below);
-							var newstk = new SoundObjectStack();
-							below.stacked = true;
-							below.stack = newstk;
-							so.stack = newstk;
-							newstk.sos = newsos;
-							stacks.push(newstk);
-							if(oldstk.sos.length <= 1) {
-								if(oldstk.sos[0] !== undefined) {
-									oldstk.sos[0].stacked = false;
-									oldstk.sos[0].stack = null;
-								}
-								stacks.splice(stacks.indexOf(oldstk), 1);
+							//stack on block:
+							//remove everything from this block and above.
+							var oldStack = so.stack;
+							var newStack = new SoundObjectStack();
+							newStack.sos = so.stack.sos.splice(so.stack.sos.indexOf(so.id));
+							//update so that these blocks now point to their new stack
+							for(i in newStack.sos) {
+								soundObjectByID(newStack.sos[i]).stack = newStack;
 							}
+							//add the block below to the bottom of this new stack
+							below.addToStack(newStack, 0);
+							//if there are less than 2 blocks left on the old stack,
+							//they're not a stack anymore.
+							if(oldStack.sos.length <= 1) {
+								if(oldStack.sos[0] !==  undefined) {
+									//1 object left
+									var leftover = soundObjectByID(oldStack.sos[0]);
+									leftover.stacked = false;
+									leftover.stack = null;
+								} else {
+									//no objects left
+									stacks.splice(stacks.indexOf(oldStack), 1);
+								}
+							}
+
 						}
 					} else {
 						if(!so.stacked) {
 							//block on stack
-							stk = below.stack;
-							so.stacked = true;
-							so.stack = stk;
-							stk.sos.push(so);
+							so.addToStack(below.stack);
 						} else {
 							//stack on stack
-							var newstk = below.stack;
-							var oldstk = so.stack;
-							var index = so.stack.sos.indexOf(so);
-							for (var i = index; i < oldstk.sos.length; i++) {
-								var current = oldstk.sos[i];
-								current.stack = newstk;
-								newstk.sos.push(current);
-							};
-							oldstk.sos.splice(index);
-							if(oldstk.sos.length <= 1) {
-								if(oldstk.sos[0] !== undefined) {
-									oldstk.sos[0].stacked = false;
-									oldstk.sos[0].stack = null;
+							var oldStack = so.stack;
+							var newStack = below.stack;
+							//add all the things from this block and above.
+							Array.prototype.push.apply(newStack.sos, oldStack.sos.splice(oldStack.sos.indexOf(so.id)));
+							//make sure all these blocks point to the new array.
+							for(i in newStack.sos) {
+								soundObjectByID(newStack.sos[i]).stack = newStack;
+							}
+							//if there are less than 2 blocks left on the old stack,
+							//they're not a stack anymore.
+							if(oldStack.sos.length <= 1) {
+								if(oldStack.sos[0] !==  undefined) {
+									//1 object left
+									var leftover = soundObjectByID(oldStack.sos[0]);
+									leftover.stacked = false;
+									leftover.stack = null;
+								} else {
+									//no objects left
+									stacks.splice(stacks.indexOf(oldStack), 1);
 								}
-								stacks.splice(stacks.indexOf(oldstk), 1);
 							}
 						}
 					}
 				} else {
 					if(so.stacked) {
-						var oldstk = so.stack;
-						var newsos = oldstk.sos.splice(oldstk.sos.indexOf(so));
-						if(newsos.length === 1) {
-							so.stacked = false;
-							so.stack = null;
+						//stack on nothing:
+						//remove everything from this block and above.
+						var oldStack = so.stack;
+						var newStack = new SoundObjectStack();
+						newStack.sos = so.stack.sos.splice(so.stack.sos.indexOf(so.id));
+						//update so that these blocks now point to their new stack
+						for(i in newStack.sos) {
+							soundObjectByID(newStack.sos[i]).stack = newStack;
 						}
-						var newstk = new SoundObjectStack();
-						for (var i = 0; i < newsos.length; i++) {
-							newsos[i].stack = newstk;
-						};
-						newstk.sos = newsos;
-						stacks.push(newstk);
-						if(oldstk.sos.length <= 1) {
-							//not a stack anymore.
-							if(oldstk.sos[0] !== undefined) {
-								oldstk.sos[0].stacked = false;
-								oldstk.sos[0].stack = null;
+						//if there are less than 2 blocks left on the old stack,
+						//they're not a stack anymore.
+						if(oldStack.sos.length <= 1) {
+							if(oldStack.sos[0] !==  undefined) {
+								//1 object left
+								var leftover = soundObjectByID(oldStack.sos[0]);
+								leftover.stacked = false;
+								leftover.stack = null;
+							} else {
+								//no objects left
+								stacks.splice(stacks.indexOf(oldStack), 1);
 							}
-							stacks.splice(stacks.indexOf(oldstk), 1);
 						}
 					}
 				}				
