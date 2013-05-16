@@ -380,7 +380,9 @@ function startRecording(m) {
 
 function loadSong() {
     var idstring = urlParams.s;
-    $("#load-song-start-container").find("p").text("loading...");
+    var lssc = $("#load-song-start-container");
+    lssc.find("p").text("loading...");
+    lssc.find(".start-button").hide();
     $.ajax({
         type: "GET",
         url: "http://do.robertvinluan.com:1337/load/"+idstring,
@@ -397,7 +399,7 @@ function loadSong() {
             navigator.webkitGetUserMedia({audio:true}, gotStream);
         },
         error: function(data) {
-            console.log("There was an error in loading the song.");
+            lssc.find("p").text("There was an error in loading the song. Please refresh the page and try again.");
         }
     })
 }

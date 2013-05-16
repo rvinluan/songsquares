@@ -73,6 +73,7 @@
                 top: (cv.height()/2) - (asc.height()/2),
                 left: (cv.width()/2) - (asc.width()/2)
             });
+            asc.find('.button').hide();
             asc.show();
             $.ajax({
                 type: "POST",
@@ -85,7 +86,7 @@
                     console.log("id returned: " + data);
                     asc.find('h1').text("Song Saved!");
                     asc.find('p').text("Here's your unique url: http://robertvinluan.com/songsquares/looper.html?s="+data);
-                    asc.find('.button').text("OK").click(function(){
+                    asc.find('.button').show().text("OK").click(function(){
                         $(this).hide();
                     });
                     asc.css({
