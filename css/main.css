@@ -56,11 +56,18 @@ body {
 	font-size: 1em;	
 	width: 300px;
 }
-/*
-#after-save-container {
-	display:block;
+
+#after-save-container .button {
+	background-color: #EEE;
+	padding: 1.5em;
+	margin: 1em;
+	color: #222;
+	text-align: center;
+	font-size: 1em;
+	cursor: pointer;
+	letter-spacing: 0.1em;
 }
-*/
+
 
 #tempo-value {
 	font-size: 1.3em;
