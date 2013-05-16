@@ -128,12 +128,7 @@ SoundObject.prototype.encodeSound = function() {
     for(b in this.sound.buffers) {
         var buffer = this.sound.buffers[b];
         this.sound.buffers[b].encodedAudio = _arrayBufferToBase64(buffer.getChannelData(0).buffer);
-        console.log(this.sound.buffers[b].encodedAudio.substr(0, 20));
-        console.log(buffer.getChannelData(0).buffer);
-        console.log(new Float32Array(buffer.getChannelData(0).buffer));
     }
-    // var buffer = this.sound.buffers[0];
-    // return base64ArrayBuffer(buffer.getChannelData(0).buffer);
 }
 
 SoundObject.prototype.decodeSound = function() {
@@ -141,11 +136,8 @@ SoundObject.prototype.decodeSound = function() {
     var newLongAudio = new LongAudioSource();
     for(b in buffersArray) {
         var buffer = buffersArray[b];
-        console.log(buffer.encodedAudio.substr(0,20));
         var ab = decode(buffer.encodedAudio);
-        console.log(ab);
         var f32 = new Float32Array(ab);
-        console.log(f32);
         buffersArray[b] = AudioBufferFromFloat32(f32);
         newLongAudio.addToBuffers(buffersArray[b]);
     }
@@ -382,8 +374,32 @@ function stopRecording(){
 
 function startRecording(m) {
     mode = m;
-    $("#start-container").hide();
+    $("#blank-start-container").hide();
 	navigator.webkitGetUserMedia({audio:true}, gotStream);
+}
+
+function loadSong() {
+    var idstring = urlParams.s;
+    $("#load-song-start-container").find("p").text("loading...");
+    $.ajax({
+        type: "GET",
+        url: "http://do.robertvinluan.com:1337/load/"+idstring,
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function(data) {
+            console.log(data);
+            for(i in data) {
+                var s = new SoundObject();
+                s.importFromJSON(data[i]);
+                soundObjects.push(s);
+            }
+            $("#load-song-start-container").hide();
+            navigator.webkitGetUserMedia({audio:true}, gotStream);
+        },
+        error: function(data) {
+            console.log("There was an error in loading the song.");
+        }
+    })
 }
 
 function playClip() {
@@ -514,11 +530,17 @@ window.onload = function() {
     });  
 
     //center the start button
-    var sb = $('#start-container');
+    var bsb = $('#blank-start-container');
+    var lssb = $('#load-song-start-container');
+    var asc = $('#after-save-container');
     var cv = $('#canvas');
-    sb.css({
-        top: (cv.height()/2) - (sb.height()/2),
-        left: (cv.width()/2) - (sb.width()/2)
+    bsb.css({
+        top: (cv.height()/2) - (bsb.height()/2),
+        left: (cv.width()/2) - (bsb.width()/2)
+    });
+    lssb.css({
+        top: (cv.height()/2) - (lssb.height()/2),
+        left: (cv.width()/2) - (lssb.width()/2)
     });
 
     //start the visualization

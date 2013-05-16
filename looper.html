@@ -27,6 +27,7 @@
     <!-- My code -->
     <script type="text/javascript" src="js/visualizer.js"></script>
     <script type="text/javascript" src="js/looper.js"></script>
+    <script type="text/javascript" src="js/song_loader.js"></script>
 </head>
 <body>
     <div id="toolbar" class="clearfix">
@@ -37,14 +38,26 @@
         
     </div>
     <div id="canvas-container">
-        <div id="start-container">
+        <div id="blank-start-container">
             <h1>Welcome!</h1>
             <p>This tool is experimental and still very much in-progress.
-                To get started, pick a mode:</p>
-            <div class="start-button" onclick="javascript:startRecording('metronome')" data-mode="metronome">Loop is based on metronome</div>
-            <div class="start-button" onclick="javascript:startRecording('free')" data-mode="free">Loop is based on length of first recording</div>
+                Pick a tempo and get started!</p>
+            <div id="tempo-value">120</div>
+            <div id="slider-tempo"></div>
+            <div class="start-button" onclick="javascript:startRecording('metronome')" data-mode="metronome">Start recording</div>
+        </div>
+        <div id="load-song-start-container">
+            <h1>Welcome!</h1>
+            <p>This tool is experimental and still very much in-progress.
+                You're listening to a song someone created.</p>
+            <div class="start-button" onclick="javascript:loadSong()" data-mode="metronome">Play</div>
         </div>
         <canvas id="canvas" width="960" height="600"></canvas>
+        <div id="after-save-container">
+            <h1></h1>
+            <p>Saving...</p>
+            <div class="button"></div>
+        </div>
 	</div>
     <script src="js/controls-setup.js" type="text/javascript"></script>
     <script src="js/base64.js" type="text/javascript"></script>
@@ -54,14 +67,29 @@
         }
         //use the button to test shit
         $('#save').click(function(){
+            var asc = $("#after-save-container");
+            var cv = $('#canvas');
+            asc.css({
+                top: (cv.height()/2) - (asc.height()/2),
+                left: (cv.width()/2) - (asc.width()/2)
+            });
+            asc.show();
             $.ajax({
                 type: "POST",
                 url: "http://do.robertvinluan.com:1337/datadump",
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 data: JSON.stringify(decircularizeAll()),
-                success: function() {
+                success: function(data) {
                     console.log("success!");
+                    console.log("id returned: " + data);
+                    asc.find('h1').text("Song Saved!");
+                    asc.find('p').text("Here's your unique url: http://localhost:8000/looper.html?s="+data);
+                    asc.find('.button').text("OK");
+                    asc.css({
+                        top: (cv.height()/2) - (asc.height()/2),
+                        left: (cv.width()/2) - (asc.width()/2)
+                    });
                 },
                 error: function(){
                     console.log("error");
@@ -70,7 +98,7 @@
         })
 
         $('body').on('keydown', function(e){
-            if(e.keyCode == 48) {
+            if(e.keyCode == 48) { //0
                 $.ajax({
                     type: "GET",
                     url: "http://do.robertvinluan.com:1337/load",

@@ -44,7 +44,10 @@ body {
 	cursor: pointer;
 }
 
-#start-container {
+#blank-start-container, 
+#load-song-start-container,
+#after-save-container {
+	display:none;
 	position: absolute;
 	background-color: #222;
 	padding: 1.5em;
@@ -53,6 +56,11 @@ body {
 	font-size: 1em;	
 	width: 300px;
 }
+/*
+#after-save-container {
+	display:block;
+}
+*/
 
 #tempo-value {
 	font-size: 1.3em;
