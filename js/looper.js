@@ -212,8 +212,8 @@ MetronomeSoundObject.loadSound = function(url, pos) {
     request.send(); 
 }
 
-MetronomeSoundObject.loadSound("http://robertvinluan.com/interaction-tests/sounds/tick.wav", 0);
-MetronomeSoundObject.loadSound("http://robertvinluan.com/interaction-tests/sounds/tock.wav", 1);
+MetronomeSoundObject.loadSound("sounds/tick.wav", 0);
+MetronomeSoundObject.loadSound("sounds/tock.wav", 1);
 
 MetronomeSoundObject.tick = function() {
     var source = audioContext.createBufferSource();
