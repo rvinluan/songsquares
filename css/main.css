@@ -46,6 +46,34 @@ body {
 	margin-right: 20px;
 }
 
+#visual-metronome-container {
+	float: left;
+	padding: .5em 1em;
+	display: none;
+}
+
+.vm-dot {
+	border-radius: 50%;
+	width: 20px;
+	height: 20px;
+	display: inline-block;
+	vertical-align: middle;
+	background: transparent;
+	border: 1px solid gray;
+	margin-right: .5em;
+	-webkit-transition: background .1s;
+	transition: background .1s;
+}
+
+.vm-dot.tick.active {
+	border: none;
+	background: red;
+}
+.vm-dot.tock.active {
+	border: none;
+	background: green;
+}
+
 #save {
 	padding: .5em 1em;
 	float: right;

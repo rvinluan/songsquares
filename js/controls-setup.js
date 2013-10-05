@@ -28,6 +28,8 @@ $('#show-settings').click(function(){
 });
 
 $('#settings input').on('change', function(e){
+	$('.vm-dot').removeClass("active");
+	$('#visual-metronome-container').toggle(); 
 	MetronomeSoundObject.audioOn = (e.target.value === "audio");
 })
 

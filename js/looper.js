@@ -221,7 +221,7 @@ MetronomeSoundObject.tick = function() {
         source.connect(MetronomeSoundObject.gain);
         source.noteOn(0);
     } else {
-
+        $('.vm-dot').removeClass('active').filter('.tick').addClass('active');
     }
 }
 
@@ -232,7 +232,7 @@ MetronomeSoundObject.tock = function(num) {
         source.connect(MetronomeSoundObject.gain);
         source.noteOn(0);
     } else {
-
+        $('.vm-dot').removeClass('active').filter('.tock').eq(num).addClass('active');
     }
 }
 
@@ -240,9 +240,9 @@ MetronomeSoundObject.play = function() {
     var quarterTime = (60000 / tempo);
     this.startedPlaying = new Date().getTime();
     MetronomeSoundObject.tick();
-    window.setTimeout(MetronomeSoundObject.tock, quarterTime, 1);
-    window.setTimeout(MetronomeSoundObject.tock, quarterTime*2, 2);
-    window.setTimeout(MetronomeSoundObject.tock, quarterTime*3, 3);
+    window.setTimeout(MetronomeSoundObject.tock, quarterTime, 0);
+    window.setTimeout(MetronomeSoundObject.tock, quarterTime*2, 1);
+    window.setTimeout(MetronomeSoundObject.tock, quarterTime*3, 2);
 }
 
 
