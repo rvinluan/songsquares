@@ -163,6 +163,8 @@ function soundObjectByID(id) {
 * A sound object that plays the metronome.
 * It doesn't have a LongAudioSource,
 * but instead two AudioBuffers for tick and tock.
+* If you look at the visualizer file,
+* it also doesn't render.
 *
 */
 
@@ -213,26 +215,34 @@ MetronomeSoundObject.loadSound("sounds/tick.wav", 0);
 MetronomeSoundObject.loadSound("sounds/tock.wav", 1);
 
 MetronomeSoundObject.tick = function() {
-    var source = audioContext.createBufferSource();
-    source.buffer = MetronomeSoundObject.sounds[0];
-    source.connect(MetronomeSoundObject.gain);
-    source.noteOn(0);
+    if(this.audioOn) {
+        var source = audioContext.createBufferSource();
+        source.buffer = MetronomeSoundObject.sounds[0];
+        source.connect(MetronomeSoundObject.gain);
+        source.noteOn(0);
+    } else {
+
+    }
 }
 
-MetronomeSoundObject.tock = function() {
-    var source = audioContext.createBufferSource();
-    source.buffer = MetronomeSoundObject.sounds[1];
-    source.connect(MetronomeSoundObject.gain);
-    source.noteOn(0);
+MetronomeSoundObject.tock = function(num) {
+    if(MetronomeSoundObject.audioOn) {
+        var source = audioContext.createBufferSource();
+        source.buffer = MetronomeSoundObject.sounds[1];
+        source.connect(MetronomeSoundObject.gain);
+        source.noteOn(0);
+    } else {
+        
+    }
 }
 
 MetronomeSoundObject.play = function() {
     var quarterTime = (60000 / tempo);
     this.startedPlaying = new Date().getTime();
     MetronomeSoundObject.tick();
-    window.setTimeout(MetronomeSoundObject.tock, quarterTime);
-    window.setTimeout(MetronomeSoundObject.tock, quarterTime*2);
-    window.setTimeout(MetronomeSoundObject.tock, quarterTime*3);
+    window.setTimeout(MetronomeSoundObject.tock, quarterTime, 1);
+    window.setTimeout(MetronomeSoundObject.tock, quarterTime*2, 2);
+    window.setTimeout(MetronomeSoundObject.tock, quarterTime*3, 3);
 }
 
 
