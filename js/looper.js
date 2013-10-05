@@ -19,10 +19,10 @@ var tempo = 120;
 var soundObjects = [];
 var stacks = [];
 
-//mode is either:
-//'Metronome' -- the length of a loop is based on 4 beats of a metronome.
-//'Free' -- the length of a loop is the same length as the first recording.
-var mode;
+//use audio metronome?
+//if false, displays dots to count time.
+//if true, plays tick and tock sounds.
+var audioMetronome = true;
 
 /* Sound Object Stack
 *

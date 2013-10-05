@@ -22,6 +22,14 @@ $('#slider-volume').slider({
 		MetronomeSoundObject.gain.gain.value = ui.value;
 	}
 });
+$('#settings').hide();
+$('#show-settings').click(function(){
+	$('#settings').slideToggle();
+});
+
+$('#settings input').on('change', function(e){
+	audioMetronome = (e.target.value === "audio");
+})
 
 $('#save').click(function(){
     var asc = $("#after-save-container");

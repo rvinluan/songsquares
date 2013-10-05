@@ -36,6 +36,16 @@ body {
 	cursor: pointer;
 }
 
+#settings {
+	position: relative;
+	border: 1px solid #333;
+	margin: 0 auto 1em auto;
+}
+
+#settings input {
+	margin-right: 20px;
+}
+
 #save {
 	padding: .5em 1em;
 	float: right;
