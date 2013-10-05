@@ -215,7 +215,7 @@ MetronomeSoundObject.loadSound("sounds/tick.wav", 0);
 MetronomeSoundObject.loadSound("sounds/tock.wav", 1);
 
 MetronomeSoundObject.tick = function() {
-    if(this.audioOn) {
+    if(MetronomeSoundObject.audioOn) {
         var source = audioContext.createBufferSource();
         source.buffer = MetronomeSoundObject.sounds[0];
         source.connect(MetronomeSoundObject.gain);
@@ -232,7 +232,7 @@ MetronomeSoundObject.tock = function(num) {
         source.connect(MetronomeSoundObject.gain);
         source.noteOn(0);
     } else {
-        
+
     }
 }
 
