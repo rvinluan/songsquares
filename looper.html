@@ -31,7 +31,8 @@
 </head>
 <body>
     <div id="toolbar" class="clearfix">
-        <div id="show-settings">Show Metronome Options</div>
+        <div id="show-settings">Metronome Options</div>
+        <div id="show-tutorial">Controls</div>
         <div id="visual-metronome-container">
             <div class="vm-dot tick"></div>
             <div class="vm-dot tock"></div>
@@ -39,6 +40,14 @@
             <div class="vm-dot tock"></div>
         </div>
         <div id="save">Save Song</div>
+    </div>
+    <div id="tutorial">
+        <p>Hold down 'r' to record. Let go of 'r' to stop recording. </p>
+        <p>Cubes only play if they're on one of the green active areas. </p>
+        <p>Use the 'asdfghjkl' keys to toggle the green active areas. </p>
+        <p>To delete a cube, drag it off the bottom of the grid. </p>
+        <p>You can stack blocks together and move them around that way.</p>
+        <p>Try not to record a sound that's longer than one measure.</p>
     </div>
     <div id="settings">
         <h3>Metronome Type:</h3>
@@ -49,9 +58,8 @@
     </div>
     <div id="canvas-container">
         <div id="blank-start-container" class="modal">
-            <h1>Welcome!</h1>
-            <p>This tool is experimental and still very much in-progress.
-                Pick a tempo and get started!</p>
+            <h1>Welcome to Songsquares!</h1>
+            <p> Pick a tempo to get started. Also, when prompted, make sure to allow this site to use your microphone. </p>
             <div id="tempo-value">120</div>
             <div id="slider-tempo"></div>
             <div class="start-button" onclick="javascript:startRecording('metronome')" data-mode="metronome">Start recording</div>

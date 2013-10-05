@@ -22,9 +22,12 @@ $('#slider-volume').slider({
 		MetronomeSoundObject.gain.gain.value = ui.value;
 	}
 });
-$('#settings').hide();
+
 $('#show-settings').click(function(){
 	$('#settings').slideToggle();
+});
+$('#show-tutorial').click(function(){
+	$('#tutorial').slideToggle();
 });
 
 $('#settings input').on('change', function(e){
@@ -41,6 +44,7 @@ $('#save').click(function(){
         left: (cv.width()/2) - (asc.width()/2)
     });
     asc.find('.button').hide();
+    asc.find('h1').hide();
     asc.show();
     $.ajax({
         type: "POST",

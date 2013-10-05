@@ -451,9 +451,33 @@ function createNewSoundObjectFromClip(clip, td) {
     so.sound = clip.clone();
     so.delay = td;
 
+    //try to place new blocks on active regions.
+    var placeX, placeY;
+    for(region in visualizer.regions) {
+        //yes I realize i'm rewriting soundObjectAt() code
+        //but I'll refactor it later
+        var regionIsOccupied = false;
+        for(var i = 0; i < soundObjects.length; i++) {
+            if(soundObjects[i].position.x === visualizer.regions[region].x &&
+                soundObjects[i].position.y === visualizer.regions[region].y) {
+                regionIsOccupied = true;
+            }
+        }
+        if(!regionIsOccupied) {
+            placeX = visualizer.regions[region].x;
+            placeY = visualizer.regions[region].y;
+            break;
+        }
+    }
+    //if all regions are occupied
+    if(placeX === undefined && placeY === undefined) {
+        placeX = Math.round(Math.random() * 13) + 2; //max 25 (visualizer.gridNumber)
+        placeY = Math.round(Math.random() * 13) + 2; //same
+    }
+
     so.position = {
-        x: Math.round(Math.random() * 13) + 2, //max 25 (visualizer.gridNumber)
-        y: Math.round(Math.random() * 13) + 2, //same
+        x: placeX,
+        y: placeY
     };
     so.size = 30;
     if(!SoundObject.prototype.lastHue) {

@@ -19,7 +19,7 @@ body {
 	color: white;
 }
 
-#canvas-container, #toolbar, #settings {
+#canvas-container, #toolbar, #settings, #tutorial {
 	width: 960px;
 	margin: 0 auto;
 	position: relative;
@@ -29,17 +29,27 @@ body {
 	padding: 1em;
 }
 
-#show-settings {
+#show-settings,
+#show-tutorial {
 	float: left;
 	vertical-align: center;
 	padding: .5em 1em;
 	cursor: pointer;
+	border: 1px solid gray;
+	margin-right: 10px;
+	border-radius: 5px;
 }
 
-#settings {
+#settings,
+#tutorial {
+	display: none;
 	position: relative;
 	border: 1px solid #333;
 	margin: 0 auto 1em auto;
+}
+
+#tutorial p {
+	margin-bottom: 1em;
 }
 
 #settings input {
@@ -96,6 +106,11 @@ body {
 	-webkit-transform: translate(-50%,-50%);
 	  -ms-transform: translate(-50%,-50%);
 	      transform: translate(-50%,-50%);
+}
+
+.modal h1 {
+	line-height: 1.1;
+	margin-bottom: 20px;
 }
 
 #after-save-container {
