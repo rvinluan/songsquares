@@ -19,11 +19,6 @@ var tempo = 120;
 var soundObjects = [];
 var stacks = [];
 
-//use audio metronome?
-//if false, displays dots to count time.
-//if true, plays tick and tock sounds.
-var audioMetronome = true;
-
 /* Sound Object Stack
 *
 * A stack of Sound Objects that moves together, and loops.
@@ -172,6 +167,8 @@ function soundObjectByID(id) {
 */
 
 MetronomeSoundObject = new SoundObject();
+
+MetronomeSoundObject.audioOn = true;
 
 MetronomeSoundObject.color = {
     r: 128,

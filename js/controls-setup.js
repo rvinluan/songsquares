@@ -28,7 +28,7 @@ $('#show-settings').click(function(){
 });
 
 $('#settings input').on('change', function(e){
-	audioMetronome = (e.target.value === "audio");
+	MetronomeSoundObject.audioOn = (e.target.value === "audio");
 })
 
 $('#save').click(function(){
