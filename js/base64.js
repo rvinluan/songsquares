@@ -156,7 +156,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 var Base64Binary = {
-  _keyStr : "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+_=",
+  _keyStr : "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
   
   /* will return a  Uint8Array type */
   decodeArrayBuffer: function(input) {
@@ -209,7 +209,8 @@ var Base64Binary = {
   }
 }
 
-//my export
+//my stuff:
+//export to Float32Array
 function ArrayBufferBase64(str) {
   var uint =  Base64Binary.decodeArrayBuffer(str);
   var f32 = new Float32Array(uint);
