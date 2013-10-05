@@ -44,10 +44,8 @@ body {
 	cursor: pointer;
 }
 
-#blank-start-container, 
-#load-song-start-container,
-#after-save-container {
-	display:none;
+.modal {
+	display: none;
 	position: absolute;
 	background-color: #222;
 	padding: 1.5em;
@@ -55,10 +53,15 @@ body {
 	text-align: center;
 	font-size: 1em;	
 	width: 300px;
+	margin: auto;
+	top: 50%; left: 50%;
+	-webkit-transform: translate(-50%,-50%);
+	  -ms-transform: translate(-50%,-50%);
+	      transform: translate(-50%,-50%);
 }
 
 #after-save-container {
-	width: auto !important;
+	width: auto;
 }
 
 #after-save-container .button {

@@ -532,6 +532,7 @@ window.onload = function() {
     });  
 
     //center the start button
+    /*
     var bsb = $('#blank-start-container');
     var lssb = $('#load-song-start-container');
     var asc = $('#after-save-container');
@@ -544,6 +545,7 @@ window.onload = function() {
         top: (cv.height()/2) - (lssb.height()/2),
         left: (cv.width()/2) - (lssb.width()/2)
     });
+    */
 
     //start the visualization
     visualizer.init(soundObjects);
