@@ -24,9 +24,11 @@ $('#slider-volume').slider({
 });
 
 $('#show-settings').click(function(){
+	$(this).toggleClass('active').text( $(this).hasClass('active') ? 'hid metronome options' : 'show metronome options'  );
 	$('#settings').slideToggle();
 });
 $('#show-tutorial').click(function(){
+	$(this).toggleClass('active').text( $(this).hasClass('active') ? 'hide controls' : 'show controls'  );
 	$('#tutorial').slideToggle();
 });
 

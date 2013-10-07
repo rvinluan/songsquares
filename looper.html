@@ -31,8 +31,8 @@
 </head>
 <body>
     <div id="toolbar" class="clearfix">
-        <div id="show-settings">Metronome Options</div>
-        <div id="show-tutorial">Controls</div>
+        <div id="show-settings" class="panel-button">show metronome options</div>
+        <div id="show-tutorial" class="panel-button">show controls</div>
         <div id="visual-metronome-container">
             <div class="vm-dot tick"></div>
             <div class="vm-dot tock"></div>
@@ -59,7 +59,8 @@
     <div id="canvas-container">
         <div id="blank-start-container" class="modal">
             <h1>Welcome to Songsquares!</h1>
-            <p> Pick a tempo to get started. Also, when prompted, make sure to allow this site to use your microphone. </p>
+            <p> Record snippets by holding down 'r'. Let go of 'r' to stop recording.</p>
+            <p>Pick a tempo to get started. Also, when prompted, make sure to allow this site to use your microphone. </p>
             <div id="tempo-value">120</div>
             <div id="slider-tempo"></div>
             <div class="start-button" onclick="javascript:startRecording('metronome')" data-mode="metronome">Start recording</div>

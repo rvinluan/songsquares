@@ -48,6 +48,10 @@ body {
 	margin: 0 auto 1em auto;
 }
 
+/*#tutorial {
+	display: block;
+}*/
+
 #tutorial p {
 	margin-bottom: 1em;
 }
@@ -92,6 +96,11 @@ body {
 	cursor: pointer;
 }
 
+.panel-button.active {
+	background: gray;
+	color: #333;	
+}
+
 .modal {
 	display: none;
 	position: absolute;
@@ -133,6 +142,10 @@ body {
 	font-size: 1.3em;
 	font-weight: bold;
 	margin: 1em 0;
+}
+
+#blank-start-container p {
+	margin-bottom: 1em;
 }
 
 .start-button {
