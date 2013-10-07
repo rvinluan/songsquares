@@ -22,7 +22,8 @@ a {
 	border-radius: 8px;
 	text-align: center;
 	display: block;
-	margin: 1em;
+	margin: 1em auto;
+	width: 200px;
 }
 
 .summation {
@@ -44,8 +45,9 @@ a {
 
 #main {
 	margin: 0 auto;
-	width: 50%;
+	width: 430px;
 	overflow: auto;
+	text-align: center;
 }
 
 	#main h1 {
@@ -54,9 +56,9 @@ a {
 		margin: 1em;
 	}
 
-	#main .description {
+/*	#main .description {
 		margin-top: 3em;
-	}
+	}*/
 
 @media screen and (max-width: 750px) {
 	#main {
