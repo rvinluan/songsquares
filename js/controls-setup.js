@@ -57,7 +57,7 @@ $('#save').click(function(){
         success: function(data) {
             console.log("success!");
             console.log("id returned: " + data);
-            asc.find('h1').text("Song Saved!");
+            asc.find('h1').show().text("Song Saved!");
             asc.find('p').html("<p>Here's your unique url:</p><p><p>http://robertvinluan.com/songsquares/looper.html?s="+data+"</p>");
             asc.find('.button').show().text("OK").click(function(){
                 asc.hide();
