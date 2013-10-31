@@ -198,6 +198,7 @@ if(audioContext.createGain !== undefined) {
 } else {
     MetronomeSoundObject.gain = audioContext.createGainNode();
 }
+MetronomeSoundObject.gain.gain.value = 0.1;
 MetronomeSoundObject.gain.connect(audioContext.destination);
 
 MetronomeSoundObject.position = {
