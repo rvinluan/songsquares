@@ -1,4 +1,11 @@
-var audioContext = new webkitAudioContext();
+var audioContext = null;
+if(window.AudioContext !== undefined) {
+    audioContext = new AudioContext();
+} else if(window.webkitAudioContext !== undefined) {
+    audioContext = new webkitAudioContext();
+} else {
+    alert("Web Audio API unavailable. Please use Chrome or Firefox!");
+}
 var AUDIOBUFFERSIZE = 2048;
 
 // a global reference to the ScriptProcessorNode has to be kept around,
@@ -45,7 +52,12 @@ var currentID = 0;
 
 var SoundObject = function() {
     this.id = ++currentID;
-    this.gain = audioContext.createGainNode();
+    //different syntax between FF and Chrome
+    if(audioContext.createGain !== undefined) {
+        this.gain = audioContext.createGain();        
+    } else {
+        this.gain = audioContext.createGainNode();
+    }
     this.gain.connect(audioContext.destination);
     this.sound = null;
     this.beingDragged = false;
@@ -180,7 +192,12 @@ MetronomeSoundObject.color = {
 
 MetronomeSoundObject.size = 30;
 
-MetronomeSoundObject.gain = audioContext.createGainNode();
+//different syntax between FF and Crhome
+if(audioContext.createGain !== undefined) {
+    MetronomeSoundObject.gain = audioContext.createGain();        
+} else {
+    MetronomeSoundObject.gain = audioContext.createGainNode();
+}
 MetronomeSoundObject.gain.connect(audioContext.destination);
 
 MetronomeSoundObject.position = {
@@ -219,7 +236,10 @@ MetronomeSoundObject.tick = function() {
         var source = audioContext.createBufferSource();
         source.buffer = MetronomeSoundObject.sounds[0];
         source.connect(MetronomeSoundObject.gain);
-        source.noteOn(0);
+        if(source.noteOn !== undefined)
+            source.noteOn(0);
+        else
+            source.start();
     } else {
         $('.vm-dot').removeClass('active').filter('.tick').addClass('active');
     }
@@ -230,7 +250,10 @@ MetronomeSoundObject.tock = function(num) {
         var source = audioContext.createBufferSource();
         source.buffer = MetronomeSoundObject.sounds[1];
         source.connect(MetronomeSoundObject.gain);
-        source.noteOn(0);
+        if(source.noteOn !== undefined)
+            source.noteOn(0);
+        else
+            source.start();
     } else {
         $('.vm-dot').removeClass('active').filter('.tock').eq(num).addClass('active');
     }
@@ -269,18 +292,19 @@ LongAudioSource.prototype.addToBuffers = function(buffer) {
 
 LongAudioSource.prototype.play = function(node) {
         var totalTime = 0;
+        var sourceArray = [];
         for(var i = 0; i < this.buffers.length; i++) {
-            var source = audioContext.createBufferSource();
-            source.buffer = this.buffers[i];
-            source.connect(node);
+            sourceArray[i] = audioContext.createBufferSource();
+            sourceArray[i].buffer = this.buffers[i];
+            sourceArray[i].connect(node, 0, 0);
             if(i == 0) {
-                source.start(0);
+                sourceArray[i].start(0);
             } else {
                 totalTime += this.buffers[i - 1].duration;
-                source.start(audioContext.currentTime + totalTime);
+                sourceArray[i].start(audioContext.currentTime + totalTime);
             }
             if(i == this.buffers.length - 1) {
-                this.endSource = source;
+                this.endSource = sourceArray[i];
             }
         }
 }
@@ -352,20 +376,19 @@ function gotStream(stream) {
     jpnode = audioContext.createScriptProcessor(AUDIOBUFFERSIZE, 1, 1);
     jpnode.onaudioprocess = function(ape) {            
         if(recording) {
-            if(clip.buffers[clip.buffers.length - 1].getChannelData(0)[AUDIOBUFFERSIZE - 1] == 0) {
+            if(clip.buffers.length === 1) {
                 //new buffers start out with AUDIOBUFFERSIZE samples of silence,
                 //this overwrites that.
+                console.log('empty')
                 clip.buffers[clip.buffers.length - 1] = ape.inputBuffer;
-                return;
             }
-            if(clip.buffers[clip.buffers.length - 1].getChannelData(0).length >= (AUDIOBUFFERSIZE*50)) {
+            if(clip.buffers[clip.buffers.length - 1].getChannelData(0).length >= (AUDIOBUFFERSIZE)) {
                 //if the current buffer reaches an unweildly size,
                 //add a new buffer and begin recording to that one instead.
-                clip.addToBuffers(audioContext.createBuffer(1, AUDIOBUFFERSIZE, 44100));
+                console.log('overflow');
+                clip.addToBuffers(AudioBufferFromFloat32(ape.inputBuffer.getChannelData(0)));
+                return;
             }
-            var newF32 = Float32Concat( clip.buffers[clip.buffers.length - 1].getChannelData(0), 
-                                        ape.inputBuffer.getChannelData(0) );
-            clip.buffers[clip.buffers.length - 1] = AudioBufferFromFloat32(newF32);
         }
     } //end onaudioprocess
 
@@ -382,7 +405,19 @@ function stopRecording(){
 function startRecording(m) {
     mode = m;
     $("#blank-start-container").hide();
-	navigator.webkitGetUserMedia({audio:true}, gotStream);
+    if(navigator.webkitGetUserMedia !== undefined) {
+        console.log(navigator.webkitGetUserMedia);
+        navigator.webkitGetUserMedia({audio:true}, gotStream);
+    } else if (navigator.mozGetUserMedia !== undefined) {
+        navigator.mozGetUserMedia({audio:true}, gotStream, function(err){
+            //error callback is required in Firefox
+            alert("Microphone Input unavailable. Please use Chrome!");
+        });
+    } else if (navigator.getUserMedia !== undefined) {
+        navigator.getUserMedia({audio:true}, gotStream);
+    } else {
+        alert("Microphone Input unavailable. Please use Chrome or Firefox!");
+    }
 }
 
 function loadSong() {

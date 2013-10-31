@@ -40,7 +40,7 @@
 			var hasGetUserMedia = !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||
             navigator.mozGetUserMedia || navigator.msGetUserMedia);
 
-            var hasWebAudioAPI = !!(window.audioContext || window.webkitAudioContext || window.mozAudioContext || window.msAudioContext);
+            var hasWebAudioAPI = !!(window.AudioContext || window.webkitAudioContext || window.mozAudioContext || window.msAudioContext);
  			
  			$(".web-audio-test-result .result").addClass(hasWebAudioAPI ? "pass" : "fail").text( hasWebAudioAPI ? "Pass" : "Fail" );
  			$(".get-user-media-test-result .result").addClass(hasGetUserMedia ? "pass" : "fail").text( hasGetUserMedia ? "Pass" : "Fail" );
