@@ -294,11 +294,11 @@ LongAudioSource.prototype.addToBuffers = function(buffer) {
 LongAudioSource.prototype.play = function(node) {
         var totalTime = 0;
         var sourceArray = [];
-        for(var i = 0; i < this.buffers.length; i++) {
+        for(var i = 1; i < this.buffers.length; i++) {
             sourceArray[i] = audioContext.createBufferSource();
             sourceArray[i].buffer = this.buffers[i];
             sourceArray[i].connect(node, 0, 0);
-            if(i == 0) {
+            if(i == 1) {
                 sourceArray[i].start(0);
             } else {
                 totalTime += this.buffers[i - 1].duration;
