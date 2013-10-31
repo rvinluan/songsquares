@@ -294,6 +294,8 @@ LongAudioSource.prototype.addToBuffers = function(buffer) {
 LongAudioSource.prototype.play = function(node) {
         var totalTime = 0;
         var sourceArray = [];
+        //don't start at 0 because that's a junk buffer of silence.
+        //it's amazing how that one tiny thing can make the user experience so much better
         for(var i = 1; i < this.buffers.length; i++) {
             sourceArray[i] = audioContext.createBufferSource();
             sourceArray[i].buffer = this.buffers[i];
