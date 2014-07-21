@@ -410,11 +410,13 @@ function startRecording(m) {
     $("#blank-start-container").hide();
     if(navigator.webkitGetUserMedia !== undefined) {
         console.log(navigator.webkitGetUserMedia);
-        navigator.webkitGetUserMedia({audio:true}, gotStream);
+        navigator.webkitGetUserMedia({audio:true}, gotStream, function(err){
+            alert("Microphone Input unavailable. Please upgrade your browser!")
+        });
     } else if (navigator.mozGetUserMedia !== undefined) {
         navigator.mozGetUserMedia({audio:true}, gotStream, function(err){
             //error callback is required in Firefox
-            alert("Microphone Input unavailable. Please use Chrome!");
+            alert("Microphone Input unavailable. Please upgrade your browser!");
         });
     } else if (navigator.getUserMedia !== undefined) {
         navigator.getUserMedia({audio:true}, gotStream);
