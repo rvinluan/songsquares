@@ -443,7 +443,9 @@ function loadSong() {
                 soundObjects.push(s);
             }
             $("#load-song-start-container").hide();
-            navigator.webkitGetUserMedia({audio:true}, gotStream);
+            navigator.webkitGetUserMedia({audio:true}, gotStream, function(err){
+                alert("Microphone Input unavailable. Please upgrade your browser!");
+            });
         },
         error: function(data) {
             lssc.find("p").text("There was an error in loading the song. Please refresh the page and try again.");
